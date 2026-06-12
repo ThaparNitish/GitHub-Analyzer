@@ -40,8 +40,6 @@ export const syncGitHubRepos = async (githubRepos, username) => {
             await updateRepo(existingRepo.id, repoData);
         } else {
             await createRepo(repoData);
-            console.log("user id", user?.id);
-            console.log("Repo data:", repoData)
         }
         }
 

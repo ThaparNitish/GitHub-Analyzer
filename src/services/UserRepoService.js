@@ -2,16 +2,18 @@ import {db} from "../config/db.js";
 
 
 export const getUserRepos = async (username) => {
-    const [rows] = await db.query(
-        `SELECT r.*
-         FROM repositories r
-         JOIN users u
-           ON r.user_id = u.id
-         WHERE u.username = ?`,
-        [username.trim()]
-    );
+  const safeUsername = String(username || "");
 
-    return rows;
+  const [rows] = await db.query(
+    `SELECT r.*
+     FROM repositories r
+     JOIN users u
+       ON r.user_id = u.id
+     WHERE u.username = ?`,
+    [safeUsername]
+  );
+
+  return rows;
 };
 
 export const getRepoByGithubId = async (githubRepoId) => {
@@ -120,13 +122,16 @@ export const updateRepo = async (repoId, repo) => {
 };
 
 export const getRepoByName = async (username, repoName) => {
+  const safeUsername = String(username || "");
+  const safeRepo = String(repoName || "");
+
   const [rows] = await db.query(
     `SELECT r.*
      FROM repositories r
      JOIN users u ON r.user_id = u.id
      WHERE u.username = ?
      AND r.name = ?`,
-    [username.trim(), repoName]
+    [safeUsername, safeRepo]
   );
 
   return rows[0] || null;

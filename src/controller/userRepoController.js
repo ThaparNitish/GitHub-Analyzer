@@ -41,7 +41,7 @@ export const getSingleRepoUser = async (req, res) => {
     const { username, repoName } = req.params;
     const token = req.headers.authorization?.split(" ")[1];
 
-    // 1. DB lookup
+
     const repo = await getRepoByName(username, repoName);
 
     if (repo) {
@@ -52,10 +52,10 @@ export const getSingleRepoUser = async (req, res) => {
       });
     }
 
-    // 2. GitHub fallback
+
     const githubRepo = await getSingleRepo(username, repoName, token);
 
-    // 3. return formatted response (NO DB SAVE)
+
     const formatted = {
       github_repo_id: githubRepo.id,
       name: githubRepo.name,

@@ -1,5 +1,5 @@
 import {syncGitHubUser} from "../services/ProfileSyncService.js"
-import {getUserProfile, createUserProfile} from "../services/UserProfileService.js"
+import {getUserProfile, createUserProfile, getAllUsersFromDB} from "../services/UserProfileService.js"
 import {getGitHubUser} from "../services/githubProfileService.js"
 
 export const getProfile = async(req, res) => {
@@ -32,3 +32,21 @@ export const getProfile = async(req, res) => {
         })
     }
 }
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await getAllUsersFromDB();
+
+    return res.json({
+      success: true,
+      count: users.length,
+      users
+    });
+
+  } catch (err) {
+    return res.json({
+      success: false,
+      message: err.message
+    });
+  }
+};

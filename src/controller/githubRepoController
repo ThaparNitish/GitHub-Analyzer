@@ -1,0 +1,30 @@
+import { getRepo } from "../services/githubRepoService";
+
+export const getGitHubRepos = async (req, res) => {
+  try {
+    const  username  = req.params.username;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        message: "Username is required",
+      });
+    }
+
+    const repos = await getRepo(username);
+
+    return res.status(200).json({
+      success: true,
+      username,
+      count: repos.length,
+      data: repos,
+    });
+  } catch (error) {
+    console.error("Controller error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch repositories",
+    });
+  }
+};

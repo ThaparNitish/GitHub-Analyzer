@@ -1,11 +1,8 @@
 import {db} from "../config/db.js";
 
 export const getUserProfile = async(username) => {
-
-    const [rows] = await db.query(
-        "SELECT * FROM users WHERE username = ?", [username.trim()]
-    );
-
+    const [rows] = await db.query("SELECT * FROM users WHERE username = ?", [String(username) || ""]);
+    
     return rows[0] || null;
 }; 
 
@@ -121,4 +118,12 @@ export const updateUserProfile = async (userId, user) => {
       userId
     ]
   );
+};
+
+export const getAllUsersFromDB = async () => {
+  const [rows] = await db.query(
+    `SELECT * FROM users`
+  );
+
+  return rows;
 };
