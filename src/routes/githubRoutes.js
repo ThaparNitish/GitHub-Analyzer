@@ -5,7 +5,7 @@ import { getGitHubRepos } from "../controller/githubRepoController.js";
 
 const router = express.Router();
 
-router.get("/profile/:username", getGitHubProfile);
+router.get("/:username", getGitHubProfile);
 router.patch("/user/editProfile", validateToken, editGitHubProfile);
 router.get("/:username/repos", getGitHubRepos)
 
