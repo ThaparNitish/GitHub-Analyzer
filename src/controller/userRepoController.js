@@ -1,4 +1,4 @@
-import {getUserRepos} from "../services/UserRepoService.js" 
+import {getUserRepos, getRepoByName} from "../services/UserRepoService.js" 
 import { getRepos } from "../services/githubRepoService.js";
 import {syncGitHubRepos} from "../services/RepoSyncService.js"
 
@@ -26,6 +26,33 @@ export const getUserReposController = async (req, res) => {
       success: true,
       source: "github",
       repos
+    });
+
+  } catch (err) {
+    return res.json({
+      success: false,
+      message: err.message
+    });
+  }
+};
+
+export const getSingleRepo = async (req, res) => {
+  try {
+    const { username, repoName } = req.params;
+
+    const repo = await getRepoByName(username, repoName);
+
+    if (!repo) {
+      return res.json({
+        success: false,
+        message: "Repo not found"
+      });
+    }
+
+    return res.json({
+      success: true,
+      source: "db",
+      repo
     });
 
   } catch (err) {

@@ -118,3 +118,16 @@ export const updateRepo = async (repoId, repo) => {
     ]
   );
 };
+
+export const getRepoByName = async (username, repoName) => {
+  const [rows] = await db.query(
+    `SELECT r.*
+     FROM repositories r
+     JOIN users u ON r.user_id = u.id
+     WHERE u.username = ?
+     AND r.name = ?`,
+    [username.trim(), repoName]
+  );
+
+  return rows[0] || null;
+};
