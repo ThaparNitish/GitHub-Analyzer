@@ -4,7 +4,7 @@ import { getDB } from "../config/db.js";
 export const getUserRepos = async (username) => {
   const safeUsername = String(username || "");
 
-  const [rows] = await getDB().query(
+  const [rows] = await getDB.query(
     `SELECT r.*
      FROM repositories r
      JOIN users u
@@ -17,7 +17,7 @@ export const getUserRepos = async (username) => {
 };
 
 export const getRepoByGithubId = async (githubRepoId) => {
-    const [rows] = await getDB().query(
+    const [rows] = await getDB.query(
         "SELECT * FROM repositories WHERE github_repo_id = ?",
         [githubRepoId]
     );
@@ -41,7 +41,7 @@ export const createRepo = async (repo) => {
     pushed_at
   } = repo;
 
-  const [result] = await getDB().query(
+  const [result] = await getDB.query(
     `INSERT INTO repositories (
       github_repo_id,
       user_id,
@@ -93,7 +93,7 @@ export const updateRepo = async (repoId, repo) => {
     pushed_at
   } = repo;
 
-  await getDB().query(
+  await getDB.query(
     `UPDATE repositories SET
       name = ?,
       full_name = ?,
@@ -125,7 +125,7 @@ export const getRepoByName = async (username, repoName) => {
   const safeUsername = String(username || "");
   const safeRepo = String(repoName || "");
 
-  const [rows] = await getDB().query(
+  const [rows] = await getDB.query(
     `SELECT r.*
      FROM repositories r
      JOIN users u ON r.user_id = u.id

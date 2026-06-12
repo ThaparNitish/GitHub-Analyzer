@@ -12,10 +12,7 @@ app.use("/api/users", userRoutes)
 
 app.get("/db-test", async (req, res) => {
   try {
-    const db = getDB();
-
-    const conn = await db.getConnection();
-    conn.release();
+    await getDB.getConnection();
 
     return res.json({
       success: true,
