@@ -1,8 +1,8 @@
-import {db} from "../config/db.js";
+import { getDB } from "../config/db.js";
 
 export const getUserProfile = async(username) => {
-    const [rows] = await db.query("SELECT * FROM users WHERE username = ?", [String(username) || ""]);
-    
+    const [rows] = await getDB.query("SELECT * FROM users WHERE username = ?", [String(username) || ""]);
+
     return rows[0] || null;
 }; 
 
@@ -25,7 +25,7 @@ export const createUserProfile = async (user) => {
     updated_at
   } = user;
 
-  const [result] = await db.query(
+  const [result] = await getDB.query(
     `INSERT INTO users (
       github_id,
       username,
@@ -87,7 +87,7 @@ export const updateUserProfile = async (userId, user) => {
     updated_at
   } = user;
 
-  await db.query(
+  await getDB.query(
     `UPDATE users SET
       name = ?,
       avatar_url = ?,
@@ -121,7 +121,7 @@ export const updateUserProfile = async (userId, user) => {
 };
 
 export const getAllUsersFromDB = async () => {
-  const [rows] = await db.query(
+  const [rows] = await getDB.query(
     `SELECT * FROM users`
   );
 
