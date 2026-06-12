@@ -1,5 +1,5 @@
 import {getUserRepos, getRepoByName} from "../services/UserRepoService.js" 
-import { getRepos } from "../services/githubRepoService.js";
+import { getRepos, getSingleRepo } from "../services/githubRepoService.js";
 import {syncGitHubRepos} from "../services/RepoSyncService.js"
 
 export const getUserReposController = async (req, res) => {
@@ -36,23 +36,44 @@ export const getUserReposController = async (req, res) => {
   }
 };
 
-export const getSingleRepo = async (req, res) => {
+export const getSingleRepoUser = async (req, res) => {
   try {
     const { username, repoName } = req.params;
+    const token = req.headers.authorization?.split(" ")[1];
 
+    // 1. DB lookup
     const repo = await getRepoByName(username, repoName);
 
-    if (!repo) {
+    if (repo) {
       return res.json({
-        success: false,
-        message: "Repo not found"
+        success: true,
+        source: "db",
+        repo
       });
     }
 
+    // 2. GitHub fallback
+    const githubRepo = await getSingleRepo(username, repoName, token);
+
+    // 3. return formatted response (NO DB SAVE)
+    const formatted = {
+      github_repo_id: githubRepo.id,
+      name: githubRepo.name,
+      full_name: githubRepo.full_name,
+      description: githubRepo.description,
+      html_url: githubRepo.html_url,
+      language: githubRepo.language,
+      stars: githubRepo.stargazers_count,
+      forks: githubRepo.forks_count,
+      created_at: githubRepo.created_at,
+      updated_at: githubRepo.updated_at,
+      pushed_at: githubRepo.pushed_at
+    };
+
     return res.json({
       success: true,
-      source: "db",
-      repo
+      source: "github",
+      repo: formatted
     });
 
   } catch (err) {
