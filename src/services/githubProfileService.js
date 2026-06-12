@@ -1,16 +1,15 @@
 import axios from "axios";
+import {syncGitHubUser} from "./ProfileSyncService.js"
 
 const GitHubBaseUrl = "https://api.github.com";
 
 export const getGitHubUser = async(username) => {
     try{
-        const response = await axios.get(`${GitHubBaseUrl}/users/${username}`); 
-        console.log("Github response Success")
+        const response = await axios.get(`${GitHubBaseUrl}/users/${username}`);
         return response.data;
     }catch(err){
-        throw new Error(
-            err.response?.data?.message || "Github API error"
-        )
+        console.log(err.response?.data || err.message)
+        err.response?.data?.message || "Github API error"
     }
 }
 

@@ -1,5 +1,5 @@
 import express from "express"
-import {getProfile, editProfile} from "../controller/githubController.js"
+import {getProfile, editProfile} from "../controller/githubProfileController.js"
 import { validateToken } from "../middleware/githubMiddleware.js";
 
 const router = express.Router();

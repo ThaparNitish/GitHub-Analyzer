@@ -1,4 +1,4 @@
-import { validateGitHubToken } from "../services/githubService.js";
+import { validateGitHubToken } from "../services/githubProfileService.js";
 
 export const validateToken = async (req, res, next) => {
     try{
@@ -23,6 +23,7 @@ export const validateToken = async (req, res, next) => {
         }
 
         req.token = token;
+        req.user = result.user;
         next();
     } catch(err) {
         return res.json({
