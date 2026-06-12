@@ -3,9 +3,13 @@ import {syncGitHubUser} from "./ProfileSyncService.js"
 
 const GitHubBaseUrl = "https://api.github.com";
 
-export const getGitHubUser = async(username) => {
+export const getGitHubUser = async(username, token = null) => {
     try{
-        const response = await axios.get(`${GitHubBaseUrl}/users/${username}`);
+        const headers = {};
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await axios.get(`${GitHubBaseUrl}/users/${username}`, {headers});
         return response.data;
     }catch(err){
         console.log(err.response?.data || err.message)

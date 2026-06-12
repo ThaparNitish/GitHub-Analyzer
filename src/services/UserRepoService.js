@@ -1,0 +1,120 @@
+import {db} from "../config/db.js";
+
+
+export const getUserRepos = async (username) => {
+    const [rows] = await db.query(
+        `SELECT r.*
+         FROM repositories r
+         JOIN users u
+           ON r.user_id = u.id
+         WHERE u.username = ?`,
+        [username.trim()]
+    );
+
+    return rows;
+};
+
+export const getRepoByGithubId = async (githubRepoId) => {
+    const [rows] = await db.query(
+        "SELECT * FROM repositories WHERE github_repo_id = ?",
+        [githubRepoId]
+    );
+
+    return rows[0] || null;
+};
+
+export const createRepo = async (repo) => {
+  const {
+    github_repo_id,
+    user_id,
+    name,
+    full_name,
+    description,
+    html_url,
+    language,
+    stars,
+    forks,
+    created_at,
+    updated_at,
+    pushed_at
+  } = repo;
+
+  const [result] = await db.query(
+    `INSERT INTO repositories (
+      github_repo_id,
+      user_id,
+      name,
+      full_name,
+      description,
+      html_url,
+      language,
+      stars,
+      forks,
+      created_at,
+      updated_at,
+      pushed_at,
+      last_synced_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+    [
+      github_repo_id,
+      user_id,
+      name,
+      full_name,
+      description,
+      html_url,
+      language,
+      stars,
+      forks,
+      created_at,
+      updated_at,
+      pushed_at
+    ]
+  );
+
+  return result.insertId;
+};
+
+export const updateRepo = async (repoId, repo) => {
+  if (!repoId) {
+    throw new Error("updateRepo: repoId is missing");
+  }
+
+  const {
+    name,
+    full_name,
+    description,
+    html_url,
+    language,
+    stars,
+    forks,
+    updated_at,
+    pushed_at
+  } = repo;
+
+  await db.query(
+    `UPDATE repositories SET
+      name = ?,
+      full_name = ?,
+      description = ?,
+      html_url = ?,
+      language = ?,
+      stars = ?,
+      forks = ?,
+      updated_at = ?,
+      pushed_at = ?,
+      last_synced_at = NOW()
+    WHERE id = ?`,
+    [
+      name,
+      full_name,
+      description,
+      html_url,
+      language,
+      stars,
+      forks,
+      updated_at,
+      pushed_at,
+      repoId
+    ]
+  );
+};

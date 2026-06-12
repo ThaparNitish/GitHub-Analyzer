@@ -1,11 +1,12 @@
 import { getGitHubUser, updateGitHubProfile, validateGitHubToken } from "../services/githubProfileService.js";
 import { syncGitHubUser } from "../services/ProfileSyncService.js";
 
-export const getProfile = async(req, res) => {
+export const getGitHubProfile = async(req, res) => {
     try{
         const username = req.params.username; 
+        const token = req.headers.authorization?.split(" ")[1];
 
-        const data = await getGitHubUser(username); 
+        const data = await getGitHubUser(username, token); 
         const fullProfile = {
             ...data
         }
@@ -24,7 +25,7 @@ export const getProfile = async(req, res) => {
 
 
 
-export const editProfile = async (req, res) => {
+export const editGitHubProfile = async (req, res) => {
   try {
     const updates = req.body;
     const token = req.token;
